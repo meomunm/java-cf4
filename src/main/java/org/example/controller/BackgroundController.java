@@ -11,7 +11,11 @@ public class BackgroundController extends BaseController {
 
     @Override
     public void onMove(int speed) {
-       model.y = model.y + speed;
+        model.y = model.y + speed;
+
+        if (model.y > ((BackgroundModel) model).maxOffSetY) {
+            model.y = ((BackgroundModel) model).defaultOffSetY;
+        }
 
         System.out.println(model.y);
     }

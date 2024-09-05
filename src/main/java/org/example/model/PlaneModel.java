@@ -1,7 +1,7 @@
 package org.example.model;
 
-public class BackgroundModel extends BaseModel{
-    public BackgroundModel(int x, int y, int width, int height, String imagePath, int defaultOffSetY, int maxOffSetY) {
+public class PlaneModel extends BaseModel{
+    public PlaneModel(int x, int y, int width, int height, String imagePath, int defaultOffSetY, int maxOffSetY, int maxOffSetX) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -9,8 +9,10 @@ public class BackgroundModel extends BaseModel{
         this.imagePath = imagePath;
         this.defaultOffSetY = defaultOffSetY;
         this.maxOffSetY = maxOffSetY;
+        this.maxOffSetX = maxOffSetX;
     }
 
     public int defaultOffSetY;
     public int maxOffSetY;
+    public int maxOffSetX;
 }
