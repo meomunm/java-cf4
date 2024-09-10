@@ -1,13 +1,16 @@
 package org.example;
 
-import org.example.controller.BackgroundController;
-import org.example.controller.BaseController;
-import org.example.controller.PlaneController;
+import org.example.controller.*;
 import org.example.model.BackgroundModel;
+import org.example.model.PlaneBulletModel;
+import org.example.model.PlaneEnemiesModel;
 import org.example.model.PlaneModel;
 import org.example.utils.Constant;
+import org.example.utils.ControllersManager;
 import org.example.utils.InputManager;
 import org.example.view.BackgroundView;
+import org.example.view.PlaneBulletView;
+import org.example.view.PlaneEnemiesView;
 import org.example.view.PlaneView;
 
 import java.awt.*;
@@ -25,8 +28,10 @@ import java.util.List;
 public class GameWindow extends Frame implements WindowListener, KeyListener {
     private BufferedImage bufferedImage;
     private Graphics backbufferGraphics;
-    private List<BaseController> baseControllers;
     private PlaneController planeController;
+    private PlaneEnemiesController planeEnemiesController;
+    private PlaneBulletController planeBulletController;
+    
     private final InputManager inputManager = new InputManager();
 
     public GameWindow() {
@@ -39,7 +44,12 @@ public class GameWindow extends Frame implements WindowListener, KeyListener {
             while (true) {
                 try {
                     repaint();
-                    planeController.processInput(inputManager.isUpPressed(), inputManager.isDownPressed(), inputManager.isLeftPressed(), inputManager.isRightPressed());
+                    planeController.processInput(
+                            inputManager.isUpPressed(),
+                            inputManager.isDownPressed(),
+                            inputManager.isLeftPressed(),
+                            inputManager.isRightPressed(),
+                            inputManager.isSpacePressed());
                     Thread.sleep(17);
                 } catch (InterruptedException ignored) {}
             }
@@ -56,7 +66,7 @@ public class GameWindow extends Frame implements WindowListener, KeyListener {
     }
 
     void executeControllers() {
-        for (BaseController baseController : baseControllers) {
+        for (BaseController baseController : ControllersManager.instance.getBaseControllerList()) {
             baseController.onMove(1);
             baseController.onDraw();
         }
@@ -72,11 +82,13 @@ public class GameWindow extends Frame implements WindowListener, KeyListener {
     }
 
     void initBaseController(Graphics graphics) {
-        this.baseControllers = new ArrayList<>();
-        this.baseControllers.add(createBackgroundController(graphics, -Constant.heightScreen * 2, 0,"res/background1.png"));
-        this.baseControllers.add(createBackgroundController(graphics, 0, Constant.heightScreen * 2,"res/background2.png"));
+        ControllersManager.instance.addController(createBackgroundController(graphics, -Constant.heightScreen * 2, 0,"res/background1.png"));
+        ControllersManager.instance.addController(createBackgroundController(graphics, 0, Constant.heightScreen * 2,"res/background2.png"));
         this.planeController = createPlaneController(graphics, 0, 0,"res/plane2.png", 0);
-        this.baseControllers.add(planeController);
+        this.planeEnemiesController = createPlaneEnemiesController(graphics , 0,0,"res/enemy_plane_white_1.png", 0);
+
+        ControllersManager.instance.addController(planeEnemiesController);
+        ControllersManager.instance.addController(planeController);
     }
 
     BaseController createBackgroundController(Graphics graphics, int defaultOffSetY, int maxOffSet, String imagePath) {
@@ -91,6 +103,11 @@ public class GameWindow extends Frame implements WindowListener, KeyListener {
         return new PlaneController(planeModel , planeView);
     }
 
+    PlaneEnemiesController createPlaneEnemiesController(Graphics graphics, int defaultOffsetY, int maxOffset, String imagePath, int maxOffsetx) {
+        PlaneEnemiesModel planeEnemiesModel = new PlaneEnemiesModel(20, 80, 32, 32, imagePath, defaultOffsetY, maxOffset, maxOffsetx);
+        PlaneEnemiesView planeEnemiesView = new PlaneEnemiesView(planeEnemiesModel, graphics);
+        return new PlaneEnemiesController(planeEnemiesModel, planeEnemiesView);
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -113,6 +130,7 @@ public class GameWindow extends Frame implements WindowListener, KeyListener {
                 inputManager.setRightPressed(true);
                 break;
             case KeyEvent.VK_SPACE:
+                inputManager.setSpacePressed(true);
                 break;
         }
     }
@@ -134,6 +152,7 @@ public class GameWindow extends Frame implements WindowListener, KeyListener {
                 inputManager.setRightPressed(false);
                 break;
             case KeyEvent.VK_SPACE:
+                inputManager.setSpacePressed(false);
                 break;
         }
     }
