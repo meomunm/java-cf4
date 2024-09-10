@@ -6,6 +6,7 @@ import org.example.controller.PlaneController;
 import org.example.model.BackgroundModel;
 import org.example.model.PlaneModel;
 import org.example.utils.Constant;
+import org.example.utils.InputManager;
 import org.example.view.BackgroundView;
 import org.example.view.PlaneView;
 
@@ -26,6 +27,7 @@ public class GameWindow extends Frame implements WindowListener, KeyListener {
     private Graphics backbufferGraphics;
     private List<BaseController> baseControllers;
     private PlaneController planeController;
+    private final InputManager inputManager = new InputManager();
 
     public GameWindow() {
         initWindow();
@@ -37,7 +39,7 @@ public class GameWindow extends Frame implements WindowListener, KeyListener {
             while (true) {
                 try {
                     repaint();
-                    executeControllers();
+                    planeController.processInput(inputManager.isUpPressed(), inputManager.isDownPressed(), inputManager.isLeftPressed(), inputManager.isRightPressed());
                     Thread.sleep(17);
                 } catch (InterruptedException ignored) {}
             }
@@ -49,12 +51,13 @@ public class GameWindow extends Frame implements WindowListener, KeyListener {
     @Override
     public void update(Graphics g) {
         super.update(g);
+        executeControllers();
         g.drawImage(bufferedImage,0, 0, 600, 1600,null);
     }
 
     void executeControllers() {
         for (BaseController baseController : baseControllers) {
-            baseController.onMove(Constant.SPEED);
+            baseController.onMove(1);
             baseController.onDraw();
         }
     }
@@ -98,26 +101,41 @@ public class GameWindow extends Frame implements WindowListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
-                planeController.onMove(0, -Constant.SPEED * 16);
+                inputManager.setUpPressed(true);
                 break;
             case KeyEvent.VK_DOWN:
-                planeController.onMove(0, Constant.SPEED * 16);
+                inputManager.setDownPressed(true);
                 break;
             case KeyEvent.VK_LEFT:
-                planeController.onMove(-Constant.SPEED * 16, 0);
+                inputManager.setLeftPressed(true);
                 break;
             case KeyEvent.VK_RIGHT:
-                planeController.onMove(Constant.SPEED * 16, 0);
+                inputManager.setRightPressed(true);
                 break;
             case KeyEvent.VK_SPACE:
-//                planeController.onMove(Constant.SPEED * 16, 0);
                 break;
         }
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-
+    public void keyReleased(KeyEvent e)
+    {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_UP:
+                inputManager.setUpPressed(false);
+                break;
+            case KeyEvent.VK_DOWN:
+                inputManager.setDownPressed(false);
+                break;
+            case KeyEvent.VK_LEFT:
+                inputManager.setLeftPressed(false);
+                break;
+            case KeyEvent.VK_RIGHT:
+                inputManager.setRightPressed(false);
+                break;
+            case KeyEvent.VK_SPACE:
+                break;
+        }
     }
 
     @Override

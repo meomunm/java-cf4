@@ -2,6 +2,7 @@ package org.example.controller;
 
 import org.example.model.BackgroundModel;
 import org.example.model.PlaneModel;
+import org.example.utils.Constant;
 import org.example.view.BackgroundView;
 import org.example.view.PlaneView;
 
@@ -16,9 +17,19 @@ public class PlaneController extends BaseController {
 
     }
 
-    public void onMove(int speedX, int speedY) {
-        this.model.x = this.model.x + speedX;
-        this.model.y = this.model.y + speedY;
+    public void processInput(boolean isUpPressed, boolean isDownPressed, boolean isLeftPressed, boolean isRightPressed) {
+        if (isUpPressed) {
+            this.model.y -= Constant.SPEED;
+        }
+        if (isDownPressed) {
+            this.model.y += Constant.SPEED;
+        }
+        if (isLeftPressed) {
+            this.model.x -= Constant.SPEED;
+        }
+        if (isRightPressed) {
+            this.model.x += Constant.SPEED;
+        }
     }
 
     @Override
