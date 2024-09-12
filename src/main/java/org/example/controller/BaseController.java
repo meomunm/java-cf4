@@ -3,7 +3,7 @@ package org.example.controller;
 import org.example.model.BaseModel;
 import org.example.view.BaseView;
 
-public abstract class BaseController {
+public abstract class BaseController implements Collider{
     public BaseModel model;
     public BaseView view;
 

@@ -17,6 +17,10 @@ public class PlaneController extends BaseController {
         this.view = planeView;
     }
 
+    /// MARK: Add debounce time
+    private volatile long lastCalled;
+    private final int interval = 500;
+
     @Override
     public void onMove(int speed) {
 
@@ -35,12 +39,15 @@ public class PlaneController extends BaseController {
         if (isRightPressed) {
             this.model.x += Constant.SPEED;
         }
-        if (isSpacePressed && view instanceof PlaneView) {
+
+        final boolean isFinishDebounce = lastCalled + interval < System.currentTimeMillis();
+        if (isSpacePressed && view instanceof PlaneView && isFinishDebounce) {
             //Mark: Bắn ra đạn nếu nhấn phím space
             final Graphics graphics = ((PlaneView) view).graphics;
 
             PlaneBulletController bulletController = createPlaneBulletController(graphics,"res/bullet-single.png");
             ControllersManager.instance.addController(bulletController);
+            lastCalled = System.currentTimeMillis();
         }
     }
 
@@ -60,5 +67,10 @@ public class PlaneController extends BaseController {
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
+    }
+
+    @Override
+    public void onCollision(Collider otherCollider) {
+
     }
 }

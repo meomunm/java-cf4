@@ -16,8 +16,6 @@ public class BackgroundController extends BaseController {
         if (model.y > ((BackgroundModel) model).maxOffSetY) {
             model.y = ((BackgroundModel) model).defaultOffSetY;
         }
-
-        System.out.println(model.y);
     }
 
     @Override
@@ -27,5 +25,10 @@ public class BackgroundController extends BaseController {
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
+    }
+
+    @Override
+    public void onCollision(Collider otherCollider) {
+
     }
 }
