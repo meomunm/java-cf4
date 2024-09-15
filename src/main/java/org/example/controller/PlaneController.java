@@ -5,6 +5,7 @@ import org.example.model.PlaneBulletModel;
 import org.example.model.PlaneModel;
 import org.example.utils.Constant;
 import org.example.utils.ControllersManager;
+import org.example.utils.Utils;
 import org.example.view.BackgroundView;
 import org.example.view.PlaneBulletView;
 import org.example.view.PlaneView;
@@ -47,6 +48,8 @@ public class PlaneController extends BaseController {
 
             PlaneBulletController bulletController = createPlaneBulletController(graphics,"res/bullet-single.png");
             ControllersManager.instance.addController(bulletController);
+            Utils.instance.playSound("res/bloody-gunshot-230516.wav");
+
             lastCalled = System.currentTimeMillis();
         }
     }
